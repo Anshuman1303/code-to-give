@@ -5,6 +5,28 @@ import User from "@/models/User";
 import { compare } from "bcrypt";
 import formSchema from "@/lib/schemas/signin";
 
+//ADDING CUSTOM FIELDS TO DEFAULT TYPES PROVIDED BY NEXT-AUTH
+declare module "next-auth"{
+  interface User{
+    id:string;
+    role:string;
+  }
+
+  interface Session{
+    user:User;
+  }
+}
+
+declare module "next-auth/jwt" {
+  interface JWT{
+    id:string;
+    role:string;
+  }
+}
+
+
+
+
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
@@ -20,7 +42,18 @@ export const authOptions: NextAuthOptions = {
           const user = await User.findOne({ email }).lean();
           if (user && password) {
             if (await compare(password, user.password)) {
-              return { ...user, id: user._id.toString() };
+
+              console.log({ ...user, id: user._id.toString() });
+              // return { ...user, id: user._id.toString() };
+              return {
+                id: user._id.toString(),
+                email:user.email,
+                role : user.role,
+                name: user.name
+              };
+
+              
+
             }
           }
           return null;
@@ -37,12 +70,20 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async jwt({ token, user }) {
-      if (user) token.user = user;
+      if (user) {
+        token.id = user.id;
+        token.role=user.role;
+        console.log("TOKEN:", token);
+      }
       return token;
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async session({ session, token }: any) {
-      session.user = token.user;
+
+      session.user.id = token.id;
+      session.user.role = token.role;
+
+      
       return session;
     },
   },

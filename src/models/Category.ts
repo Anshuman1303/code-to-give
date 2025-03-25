@@ -2,6 +2,7 @@ import mongoose, { Document, Schema, Types } from "mongoose";
 
 interface Categories extends Document {
   name: string;
+  description:string;
   teacher: Types.ObjectId; //REFERENCE TO TEACHER
   submissions: Types.ObjectId[]; //REFERENCE TO SUBMSSIONS
   deadline: Date;
@@ -16,6 +17,10 @@ const categorySchema = new Schema<Categories>(
       type: String,
       required: [true, "Category missing"],
       trim: true,
+    },
+    description:{
+      type:String,
+      required:[true,"Description is required"]
     },
     teacher: {
       type: Schema.Types.ObjectId,

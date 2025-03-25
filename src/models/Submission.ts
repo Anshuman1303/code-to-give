@@ -4,6 +4,7 @@ import mongoose, { Document, Schema, Types } from "mongoose";
 
 interface Submissions extends Document {
   title: string;
+  description?:string;
   student: Types.ObjectId; //REFERENCE TO USER
   category: Types.ObjectId; //REFERENCE TO CATEGORY
   content: {
@@ -27,6 +28,9 @@ const submissionSchema = new Schema<Submissions>(
       type: String,
       required: [true, "Submission title missing"],
       trim: true,
+    },
+    description:{
+      type:String
     },
     student: {
       type: Schema.Types.ObjectId,
