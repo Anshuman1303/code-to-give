@@ -11,7 +11,7 @@ export default z
       .toLowerCase()
       .trim(),
     name: z.string().min(4, "Name must be at least 8 character").max(64, "Name cannot be more than 64 characters").trim(),
-    contactNumber: z.string().refine(isMobilePhone, "Invalid number"),
+    contactNumber: z.string().refine(isMobilePhone, "Invalid number").optional(),
     password: z
       .string()
       .min(8, "Password must be at least 8 character")

@@ -1,22 +1,24 @@
+import { acceptedFileTypes } from "@/lib/schemas/submission";
 import mongoose, { Document, Schema, Types } from "mongoose";
 // import User from "./User";
 // import Category from "./Category";
 
-interface Submissions extends Document {
+export interface Submissions extends Document {
   title: string;
   student: Types.ObjectId; //REFERENCE TO USER
   category: Types.ObjectId; //REFERENCE TO CATEGORY
   content: {
     //SUBMISSION FILE
-    type: "text" | "audio" | "video" | "photo";
+    type: (typeof acceptedFileTypes)[number];
     data: string;
+    summary: string;
   };
-  evaluationScores: {
+  evaluationScores?: {
     //SCORE FOR EACH PARAM
     parameter: string;
     score: number;
   }[];
-  aggregatedScore: number;
+  aggregatedScore?: number;
   submittedAt: Date;
   updatedAt: Date;
 }
@@ -43,12 +45,15 @@ const submissionSchema = new Schema<Submissions>(
     content: {
       type: {
         type: String,
-        enum: ["text", "audio", "video", "photo"],
+        enum: acceptedFileTypes,
         required: true,
       },
       data: {
         type: String,
         required: true,
+      },
+      summary: {
+        type: String,
       },
     },
     evaluationScores: [

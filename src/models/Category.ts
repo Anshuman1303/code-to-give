@@ -1,7 +1,8 @@
 import mongoose, { Document, Schema, Types } from "mongoose";
 
-interface Categories extends Document {
+export interface Categories extends Document {
   name: string;
+  description: string;
   teacher: Types.ObjectId; //REFERENCE TO TEACHER
   submissions: Types.ObjectId[]; //REFERENCE TO SUBMSSIONS
   deadline: Date;
@@ -13,6 +14,11 @@ interface Categories extends Document {
 const categorySchema = new Schema<Categories>(
   {
     name: {
+      type: String,
+      required: [true, "Category missing"],
+      trim: true,
+    },
+    description: {
       type: String,
       required: [true, "Category missing"],
       trim: true,
